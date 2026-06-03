@@ -1,11 +1,20 @@
-from scipy.signal import butter, lfilter
+"""Outils d'analyse et de visualisation de signaux audio.
+
+La classe `bandeSonore` regroupe le chargement d'un fichier sonore,
+le calcul de caractéristiques audio courantes et quelques méthodes
+d'affichage utiles pour documenter un projet de traitement du signal.
+"""
+
 import librosa
 import numpy as np
 import matplotlib.pyplot as plt
 
 
 class bandeSonore:
+    """Représente un signal audio et ses caractéristiques extraites."""
+
     def __init__(self, name, filePath):
+        """Charge le son et calcule immédiatement les descripteurs principaux."""
         self.name = name
         self.y, self.sr = self.load_sound(filePath)
         self.centroid = self.spectral_centroid()
@@ -19,13 +28,14 @@ class bandeSonore:
         self.harmonic = None
         self.percussive = None
 
-    ## CHARGEMENT DU SON
+    # Chargement et caractéristiques de base
     def load_sound(self, filePath):
+        """Charge un fichier audio via Librosa et renvoie le signal et sa fréquence d'échantillonnage."""
         y, sr = librosa.load(filePath, sr=None)
         return y, sr
 
-    ## AFFICHAGE DES CARACTERISTIQUES DU SIGNAL
     def describe(self):
+        """Affiche un résumé lisible des caractéristiques extraites du signal."""
         print(f"Nom : {self.name}")
         print(f"DurÃ©e du signal : {len(self.y) / self.sr:.2f} secondes")
         print(f"FrÃ©quence d'Ã©chantillonnage : {self.sr} Hz")
@@ -40,60 +50,62 @@ class bandeSonore:
         print("-" * 40)
         print("\n")
 
-    ## ECHANTILLONNAGE
     def echantillonner(self, startTime, stopTime):
+        """Retourne une portion du signal entre deux instants, en secondes."""
         start_sample = int(startTime * self.sr)
         stop_sample = int(stopTime * self.sr)
         return self.y[start_sample:stop_sample]
 
-    ## CALCUL DU SPECTRAL CENTROID
     def spectral_centroid(self):
+        """Calcule le centroïde spectral moyen du signal."""
         return librosa.feature.spectral_centroid(y=self.y, sr=self.sr).mean()
 
-    ## CALCUL TRANSFORMEE DE FOURIER
     def calcul_stft(self):
+        """Calcule le spectrogramme STFT en décibels."""
         D = librosa.stft(self.y)
         S_db = librosa.amplitude_to_db(np.abs(D), ref=np.max)
         return S_db
 
-    ## CALCUL DES MFCC
     def calcul_mfcc(self):
+        """Calcule les coefficients MFCC du signal."""
         mfcc = librosa.feature.mfcc(y=self.y, sr=self.sr)
         return mfcc
 
-    ## CALCUL DES CHROMA
     def calcul_chroma(self):
+        """Calcule la représentation chroma du signal."""
         chroma = librosa.feature.chroma_stft(y=self.y, sr=self.sr)
         return chroma
 
-    ## DETECTION DU TEMPO
     def detecter_tempo(self):
+        """Estime le tempo principal en BPM."""
         tempo, _ = librosa.beat.beat_track(y=self.y, sr=self.sr)
         return tempo
 
-    ## DETECTION DE LA NOTE DOMINANTE
     def detecter_note_dominante(self):
+        """Déduit la note la plus présente à partir de la moyenne chroma."""
         chroma_mean = self.chroma.mean(axis=1)
         dominant_note = librosa.midi_to_note(np.argmax(chroma_mean))
         return dominant_note
 
-    ## SEPARATION HARMONIQUE ET PERCUSSIVE
     def separation_hpss(self):
+        """Sépare le signal en composantes harmonique et percussive."""
         self.harmonic, self.percussive = librosa.effects.hpss(self.y)
         return self.harmonic, self.percussive
 
-    ## ZERO CROSSING RATE
     def zcr(self):
+        """Calcule le taux moyen de passages par zéro."""
         zcr = librosa.feature.zero_crossing_rate(y=self.y)
         return zcr
 
-    ## VECTEUR DE CARACTERISTIQUES
     def calcul_features_vecteur(self):
+        """Concatène les principaux descripteurs audio dans un vecteur unique."""
         features = np.hstack(
             [
                 np.mean(self.mfcc, axis=1),
                 np.mean(self.chroma, axis=1),
                 np.mean(self.centroid),
+                self.tempo,
+                self.dominant_note,
                 np.mean(self.zcr),
             ]
         )
@@ -101,17 +113,17 @@ class bandeSonore:
 
     # ------------------------------------------------------------------------------------------------
 
-    ## AFFICHAGE DE LA FORME D'ONDE
     def afficher_forme_onde(self, ax=None):
+        """Affiche la forme d'onde du signal."""
         if ax is None:
             fig, ax = plt.subplots()
         librosa.display.waveshow(self.y, sr=self.sr, ax=ax)
         ax.set_title(f"Forme d'onde - {self.name}")
 
-    ## AFFICHAGE DU SPECTROGRAMME
     def afficher_spectrogramme(
         self, startTime=None, stopTime=None, ax=None, valeurs=None, title_suffix=""
     ):
+        """Affiche un spectrogramme à partir du signal complet ou d'un extrait."""
         if ax is None:
             fig, ax = plt.subplots()
         ax.set_title(f"{self.name} {title_suffix}")
@@ -127,22 +139,22 @@ class bandeSonore:
         S_db = librosa.amplitude_to_db(np.abs(D), ref=np.max)
         librosa.display.specshow(S_db, sr=self.sr, x_axis="time", y_axis="log", ax=ax)
 
-    ## AFFICHAGE DES MFCC
     def afficher_mfcc(self, ax=None):
+        """Affiche la matrice MFCC."""
         if ax is None:
             fig, ax = plt.subplots()
         librosa.display.specshow(self.mfcc, x_axis="time", ax=ax)
         ax.set_title(f"MFCC - {self.name}")
 
-    ## AFFICHAGE DES CHROMA
     def afficher_chroma(self, ax=None):
+        """Affiche la représentation chroma et la note dominante."""
         if ax is None:
             fig, ax = plt.subplots()
         librosa.display.specshow(self.chroma, x_axis="time", y_axis="chroma", ax=ax)
         ax.set_title(f"Chroma - {self.name} - Note dominante : {self.dominant_note}")
 
-    ## AFFICHAGE DE LA SEPARATION HARMONIQUE ET PERCUSSIVE
     def afficher_hpss(self, ax=None):
+        """Affiche les spectrogrammes des composantes harmonique et percussive."""
         if self.harmonic is None or self.percussive is None:
             self.separation_hpss()
         if ax is None:
@@ -157,12 +169,16 @@ class bandeSonore:
             valeurs=self.percussive, ax=ax[1], title_suffix=" - Composante percussive"
         )
 
-    ## TRAITEMENTS DU SON
-
-    # FILTRE PASSE BAS
     def passe_bas(self, cutoff, order=5):
+        """Applique un filtre passe-bas de Butterworth."""
         normal_cutoff = cutoff / (0.5 * self.sr)
         b, a = butter(order, normal_cutoff, btype="low", analog=False)
+        return lfilter(b, a, self.y)
+
+    def passe_haut(self, cutoff, order=5):
+        """Applique un filtre passe-haut de Butterworth."""
+        normal_cutoff = cutoff / (0.5 * self.sr)
+        b, a = butter(order, normal_cutoff, btype="high", analog=False)
         return lfilter(b, a, self.y)
 
     def passe_haut(self, cutoff, order=5):
