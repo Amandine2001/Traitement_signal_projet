@@ -2,12 +2,14 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.svm import SVC
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 def model_randomforest(df):
 
     # Séparer les caractéristiques (X) et les étiquettes (y)
-    X = df.drop(columns=["normalite"])
+    X = df.drop(columns=["name", "normalite"])
     y = df["normalite"]
 
     # Diviser les données en ensembles d'entraînement et de test
@@ -26,10 +28,25 @@ def model_randomforest(df):
     print(classification_report(y_test, y_pred))
     print(confusion_matrix(y_test, y_pred))
 
+    # afficher la matrice de confusion
+    matrice_confusion = confusion_matrix(y_test, y_pred)
+    print("Matrice de confusion :")
+    plt.figure(figsize=(8, 6))
+    sns.heatmap(
+        matrice_confusion,
+        annot=True,
+        fmt="d",
+        cmap="Blues",
+        xticklabels=["Normal", "Anormal"],
+        yticklabels=["Normal", "Anormal"],
+    )
+    plt.xlabel("Étiquettes prédites")
+    plt.ylabel("Étiquettes réelles")
+    plt.title("Matrice de confusion")
+    plt.show()
+
     return model
 
-
-classes = ["Normal", "Défaut roulement", "Défaut moteur", "Défaut ventilation"]
 
 # Model avec SVM
 
@@ -37,7 +54,7 @@ classes = ["Normal", "Défaut roulement", "Défaut moteur", "Défaut ventilation
 def model_svm(df):
 
     # Séparer les caractéristiques (X) et les étiquettes (y)
-    X = df.drop(columns=["normalite"])
+    X = df.drop(columns=["name", "normalite"])
     y = df["normalite"]
 
     # Diviser les données en ensembles d'entraînement et de test
@@ -55,15 +72,44 @@ def model_svm(df):
     # Afficher le rapport de classification et la matrice de confusion
     print(classification_report(y_test, y_pred))
     print(confusion_matrix(y_test, y_pred))
-
+    matrice_confusion = confusion_matrix(y_test, y_pred)
+    print("Matrice de confusion :")
+    plt.figure(figsize=(8, 6))
+    sns.heatmap(
+        matrice_confusion,
+        annot=True,
+        fmt="d",
+        cmap="Blues",
+        xticklabels=["Normal", "Anormal"],
+        yticklabels=["Normal", "Anormal"],
+    )
+    plt.xlabel("Étiquettes prédites")
+    plt.ylabel("Étiquettes réelles")
+    plt.title("Matrice de confusion")
+    plt.show()
     return model
 
 
 # Test du modèle SVM
+def remap_in_numeric_labels(df):
+    normalite_mapping = {
+        "normal": 0,
+        "abnormal": 1,
+    }
+    mecanisme_mapping = {
+        "fan": 0,
+        "pump": 1,
+        "slider": 2,
+        "valve": 3,
+    }
+    df["normalite"] = df["normalite"].map(normalite_mapping)
+    df["mecanisme"] = df["mecanisme"].map(mecanisme_mapping)
+    df["modele"] = df["modele"].astype("category").cat.codes
+    return df
 
 
 def test_model_svm(model, df):
-    X = df.drop(columns=["normalite"])
+    X = df.drop(columns=["name", "normalite"])
     y = df["normalite"]
 
     y_pred = model.predict(X)

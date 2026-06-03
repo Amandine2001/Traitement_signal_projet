@@ -8,6 +8,7 @@ d'affichage utiles pour documenter un projet de traitement du signal.
 import librosa
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.signal import butter, lfilter
 
 
 class bandeSonore:
@@ -23,7 +24,7 @@ class bandeSonore:
         self.chroma = self.calcul_chroma()
         self.dominant_note = self.detecter_note_dominante()
         self.tempo = self.detecter_tempo()
-        self.zcr = self.zcr()
+        self.zcr = self.zcr()  # ty:ignore[missing-argument]
         self.features = self.calcul_features_vecteur()
         self.harmonic = None
         self.percussive = None
@@ -106,7 +107,7 @@ class bandeSonore:
                 np.mean(self.centroid),
                 self.tempo,
                 self.dominant_note,
-                np.mean(self.zcr),
+                np.mean(self.zcr),  # ty:ignore[no-matching-overload]
             ]
         )
         return features
@@ -177,11 +178,6 @@ class bandeSonore:
 
     def passe_haut(self, cutoff, order=5):
         """Applique un filtre passe-haut de Butterworth."""
-        normal_cutoff = cutoff / (0.5 * self.sr)
-        b, a = butter(order, normal_cutoff, btype="high", analog=False)
-        return lfilter(b, a, self.y)
-
-    def passe_haut(self, cutoff, order=5):
         normal_cutoff = cutoff / (0.5 * self.sr)
         b, a = butter(order, normal_cutoff, btype="high", analog=False)
         return lfilter(b, a, self.y)

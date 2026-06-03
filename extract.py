@@ -1,19 +1,19 @@
 import bandeSonore
 import pandas as pd
- 
- 
+
+
 def create_dataframe(
     features_list: list[dict[str, bandeSonore.bandeSonore | str]],
 ):
- 
+
     data = list()
- 
+
     for item in features_list:
-        audio: bandeSonore.bandeSonore = item["audio"]
-        mecanisme: str = item["mecanisme"]
-        modele: str = item["modele"]
-        normalite: str = item["normalite"]
- 
+        audio: bandeSonore.bandeSonore = item["audio"]  # ty:ignore[invalid-assignment]
+        mecanisme: str = item["mecanisme"]  # ty:ignore[invalid-assignment]
+        modele: str = item["modele"]  # ty:ignore[invalid-assignment]
+        normalite: str = item["normalite"]  # ty:ignore[invalid-assignment]
+
         data.append(
             {
                 "name": audio.name,
@@ -27,6 +27,6 @@ def create_dataframe(
                 "zcr": audio.zcr,
             }
         )
- 
+
     df = pd.DataFrame(data)
     return df

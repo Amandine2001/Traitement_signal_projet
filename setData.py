@@ -1,10 +1,12 @@
-import os
-def set_fata():
-    data = []
-    data_path= "audio"
-    for filename in os.listdir(data_path):
-    
-    label = nom_labels.get(filename, 'inconnu')
-    for son in os.listdir(os.path.join(data_path, filename)):
-        if son.endswith('.wav'):
-            dataset.append((os.path.join(data_path, filename, son), label))
+import pandas as pd
+
+
+def sample_df(filepath):
+    df = pd.read_csv(filepath)
+    df_normal = df[df["normalite"] == "normal"]
+    df_anormal = df[df["normalite"] != "normal"]
+
+    df_normal_sampled = df_normal.sample(n=len(df_anormal), random_state=42)
+    df_final = pd.concat([df_normal_sampled, df_anormal], ignore_index=True)
+
+    return df_final
