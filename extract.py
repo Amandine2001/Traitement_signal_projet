@@ -23,10 +23,15 @@ def create_dataframe(
                 "centroid": audio.centroid,
                 "mfcc_mean": audio.mfcc.mean(),
                 "chroma_mean": audio.chroma.mean(),
-                "tempo": audio.tempo,
-                "zcr": audio.zcr,
+                "tempo": audio.tempo[0] if audio.tempo else None,
+                "zcr": audio.zcr.mean() if audio.zcr is not None else None,  # ty:ignore[unresolved-attribute]
             }
         )
 
     df = pd.DataFrame(data)
+
     return df
+
+
+def save_dataframe(df: pd.DataFrame, filename: str = "features.csv"):
+    df.to_csv(filename, index=False)
