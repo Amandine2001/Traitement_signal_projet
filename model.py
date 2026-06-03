@@ -2,15 +2,18 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.svm import SVC
+from setData import sample_df
+
 import matplotlib.pyplot as plt
 import seaborn as sns
+import pandas as pd
 
 
-def model_randomforest(df):
+def model_randomforest(df: pd.DataFrame, target: str, columns_to_drop: list):
 
     # Séparer les caractéristiques (X) et les étiquettes (y)
-    X = df.drop(columns=["name", "normalite"])
-    y = df["normalite"]
+    X = df.drop(columns=columns_to_drop)
+    y = df[target]
 
     # Diviser les données en ensembles d'entraînement et de test
     X_train, X_test, y_train, y_test = train_test_split(
@@ -44,7 +47,9 @@ def model_randomforest(df):
     plt.xlabel("Étiquettes prédites")
     plt.ylabel("Étiquettes réelles")
     plt.title("Matrice de confusion avec Random Forest")
-    plt.show()
+    # plt.show()
+    plt.savefig("confusion_matrix.png")
+    plt.close()
 
     # Afficher l'importance des features
     feature_importances = model.feature_importances_
@@ -52,7 +57,9 @@ def model_randomforest(df):
     plt.figure(figsize=(10, 6))
     sns.barplot(x=feature_importances, y=features)
     plt.title("Importance des features avec Random Forest")
-    plt.show()
+    # plt.show()
+    plt.savefig("confusion_matrix.png")
+    plt.close()
 
     return model
 
@@ -126,3 +133,13 @@ def test_model_svm(model, df):
 
     print(classification_report(y, y_pred))
     print(confusion_matrix(y, y_pred))
+
+
+if __name__ == "__main__":
+    df = sample_df(filepath="features.csv")
+    columns_to_drop = ["name", "normalite"]
+    target = "normalite"
+
+    df = remap_in_numeric_labels(df)
+
+    model_randomforest(df=df, target=target, columns_to_drop=columns_to_drop)

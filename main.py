@@ -16,7 +16,9 @@ def main():
 
     print("Hello from traitement-signal-projet!")
     df = sample_df("features.csv")
+    print(f"\n Signal caracteristics : \n {df.head()}")
     df = remap_in_numeric_labels(df)
+    print(f"\n Dataframe's remap : \n {df.head()}")
 
     model_svm(df)
     model_randomforest(df)

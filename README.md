@@ -1,22 +1,22 @@
-# Traitement signal projet (Maxime , Amandine, Johann)
+# Traitement signal projet (Maxime, Amandine, Johann)
 
-Projet de fin de cours en traitement numerique du signal audio.
+Projet en traitement numérique du signal avec un dataset `MIMII` pour l’investigation et l’inspection des machines industrielles défectueuses, issu du site https://zenodo.org/records/3384388. 
 
-Objectif: detecter l'etat normal/anormal d'un equipement mecanique a partir de fichiers WAV, en extrayant des descripteurs audio puis en entrainant deux modeles de classification (SVM et Random Forest).
+**Objectif**: détecter l'état normal/anormal d'un équipement mécanique à partir de fichiers `.WAV`, en extrayant des descripteurs audios puis en entrainant deux modèles de classification binaire (SVM et Random Forest) puis faire une classification multiclasse (normal, défaut roulement, défaut moteur, défaut ventilation).
 
 ## Vue d'ensemble du pipeline
 
 Le flux principal est dans `main.py`:
 
-1. Charge les fichiers audio depuis le dossier `audio` (si `features.csv` n'existe pas).
-2. Extrait des features acoustiques pour chaque fichier.
-3. Sauvegarde ces features dans `features.csv`.
-4. Reequilibre les classes avec un sous-echantillonnage de la classe `normal`.
-5. Encode les labels en valeurs numeriques.
-6. Entraine et evalue:
+1. Charger les fichiers audio depuis le dossier `audio` (si `features.csv` n'existe pas).
+2. Extraire les features acoustiques pour chaque fichier.
+3. Sauvegarder ces features dans `features.csv`.
+4. Rééquilibrer les classes à l'aide d'un sous-échantillonnage de la classe `normal`.
+5. Encoder les labels en valeurs numeriques.
+6. Entrainer et evaluer:
 	 - un SVM lineaire
 	 - une Random Forest
-7. Affiche les metriques (classification report, matrice de confusion) et des heatmaps.
+7. Afficher les métriques (classification report, matrice de confusion) et des heatmaps.
 
 ## Structure du projet
 
