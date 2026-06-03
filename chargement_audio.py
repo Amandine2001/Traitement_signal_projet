@@ -1,8 +1,9 @@
 import os
 from bandeSonore import bandeSonore
 
+
 def load_audio_files(datapath):
-    training_data = []
+    training_data: list[dict[str, bandeSonore | str]] = []
     count = 0
     print(f"Loading audio files from: {datapath}")
     for root, dirs, files in os.walk(datapath):
@@ -16,12 +17,14 @@ def load_audio_files(datapath):
                 # mecanisme/modele/normalite
                 _, mecanisme, modele, normalite = relative_path.split(os.sep)
 
-                training_data.append({
-                    "audio": bandeSonore(file, file_path),
-                    "mecanisme": mecanisme,
-                    "modele": modele,
-                    "normalite": normalite
-                })
+                training_data.append(
+                    {
+                        "audio": bandeSonore(file, file_path),
+                        "mecanisme": mecanisme,
+                        "modele": modele,
+                        "normalite": normalite,
+                    }
+                )
 
                 print(
                     f"count: {count} | file: {file} | mecanisme: {mecanisme} | modele: {modele} | normalite: {normalite}"
