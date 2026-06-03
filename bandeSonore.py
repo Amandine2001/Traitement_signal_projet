@@ -4,7 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.signal import butter, lfilter
 
-
+   
 
 class bandeSonore:
     def __init__(self, name, filePath):
