@@ -12,8 +12,7 @@ def main():
         training_data = load_audio_files(datapath)
         df = create_dataframe(training_data)
         save_dataframe(df, "features.csv")
-
-    print(f"Total audio files loaded: {len(training_data)}")
+        print(f"Total audio files loaded: {len(training_data)}")
 
     print("Hello from traitement-signal-projet!")
     df = sample_df("features.csv")

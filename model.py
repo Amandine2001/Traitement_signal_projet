@@ -25,12 +25,13 @@ def model_randomforest(df):
     y_pred = model.predict(X_test)
 
     # Afficher le rapport de classification et la matrice de confusion
+    print("Rapport de classification pour Random Forest :")
     print(classification_report(y_test, y_pred))
     print(confusion_matrix(y_test, y_pred))
 
     # afficher la matrice de confusion
     matrice_confusion = confusion_matrix(y_test, y_pred)
-    print("Matrice de confusion :")
+    print("Matrice de confusion pour Random Forest :")
     plt.figure(figsize=(8, 6))
     sns.heatmap(
         matrice_confusion,
@@ -42,7 +43,7 @@ def model_randomforest(df):
     )
     plt.xlabel("Étiquettes prédites")
     plt.ylabel("Étiquettes réelles")
-    plt.title("Matrice de confusion")
+    plt.title("Matrice de confusion avec Random Forest")
     plt.show()
 
     return model
@@ -70,10 +71,11 @@ def model_svm(df):
     y_pred = model.predict(X_test)
 
     # Afficher le rapport de classification et la matrice de confusion
+    print("Rapport de classification pour SVM :")
     print(classification_report(y_test, y_pred))
     print(confusion_matrix(y_test, y_pred))
     matrice_confusion = confusion_matrix(y_test, y_pred)
-    print("Matrice de confusion :")
+    print("Matrice de confusion pour SVM :")
     plt.figure(figsize=(8, 6))
     sns.heatmap(
         matrice_confusion,
@@ -85,7 +87,7 @@ def model_svm(df):
     )
     plt.xlabel("Étiquettes prédites")
     plt.ylabel("Étiquettes réelles")
-    plt.title("Matrice de confusion")
+    plt.title("Matrice de confusion avec SVM")
     plt.show()
     return model
 

@@ -1,4 +1,4 @@
-# Traitement signal projet
+# Traitement signal projet (Maxime , Amandine, Johann)
 
 Projet de fin de cours en traitement numerique du signal audio.
 
