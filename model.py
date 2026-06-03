@@ -29,7 +29,7 @@ def model_randomforest(df):
     print(classification_report(y_test, y_pred))
     print(confusion_matrix(y_test, y_pred))
 
-    # afficher la matrice de confusion
+    # afficher une heatmap de la matrice de confusion et un autre graphique avec l importance des features
     matrice_confusion = confusion_matrix(y_test, y_pred)
     print("Matrice de confusion pour Random Forest :")
     plt.figure(figsize=(8, 6))
@@ -44,6 +44,14 @@ def model_randomforest(df):
     plt.xlabel("Étiquettes prédites")
     plt.ylabel("Étiquettes réelles")
     plt.title("Matrice de confusion avec Random Forest")
+    plt.show()
+
+    # Afficher l'importance des features
+    feature_importances = model.feature_importances_
+    features = X.columns
+    plt.figure(figsize=(10, 6))
+    sns.barplot(x=feature_importances, y=features)
+    plt.title("Importance des features avec Random Forest")
     plt.show()
 
     return model

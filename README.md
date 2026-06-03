@@ -150,12 +150,6 @@ Pendant l'execution, le script affiche:
 - la matrice de confusion brute
 - une heatmap de la matrice de confusion
 
-## Limites connues
-
-- Dans `main.py`, la variable `training_data` est utilisee apres le bloc conditionnel. Si `features.csv` existe deja, cette variable n'est pas definie et peut provoquer une erreur.
-- Le dossier `audio` doit respecter strictement la structure de labels attendue.
-- Le reequilibrage est un sous-echantillonnage simple; d'autres strategies pourraient etre testees.
-
 ## Ameliorations possibles
 
 - Ajouter une normalisation des features (StandardScaler) avant SVM.
