@@ -47,8 +47,7 @@ def model_randomforest(df: pd.DataFrame, target: str, columns_to_drop: list):
     plt.xlabel("Étiquettes prédites")
     plt.ylabel("Étiquettes réelles")
     plt.title("Matrice de confusion avec Random Forest")
-    # plt.show()
-    plt.savefig("confusion_matrix.png")
+    plt.savefig("matrice_confusion_randomforest.png")
     plt.close()
 
     # Afficher l'importance des features
@@ -57,8 +56,7 @@ def model_randomforest(df: pd.DataFrame, target: str, columns_to_drop: list):
     plt.figure(figsize=(10, 6))
     sns.barplot(x=feature_importances, y=features)
     plt.title("Importance des features avec Random Forest")
-    # plt.show()
-    plt.savefig("confusion_matrix.png")
+    plt.savefig("importance_features_randomforest.png")
     plt.close()
 
     return model
@@ -67,11 +65,11 @@ def model_randomforest(df: pd.DataFrame, target: str, columns_to_drop: list):
 # Model avec SVM
 
 
-def model_svm(df):
+def model_svm(df: pd.DataFrame, target: str, columns_to_drop: list):
 
     # Séparer les caractéristiques (X) et les étiquettes (y)
-    X = df.drop(columns=["name", "normalite"])
-    y = df["normalite"]
+    X = df.drop(columns=columns_to_drop)
+    y = df[target]
 
     # Diviser les données en ensembles d'entraînement et de test
     X_train, X_test, y_train, y_test = train_test_split(
@@ -103,7 +101,8 @@ def model_svm(df):
     plt.xlabel("Étiquettes prédites")
     plt.ylabel("Étiquettes réelles")
     plt.title("Matrice de confusion avec SVM")
-    plt.show()
+    plt.savefig("matrice_confusion_svm.png")
+    plt.close()
     return model
 
 
@@ -125,9 +124,9 @@ def remap_in_numeric_labels(df):
     return df
 
 
-def test_model_svm(model, df):
-    X = df.drop(columns=["name", "normalite"])
-    y = df["normalite"]
+def test_model_svm(model, df, columns_to_drop, target):
+    X = df.drop(columns=columns_to_drop)
+    y = df[target]
 
     y_pred = model.predict(X)
 
@@ -143,3 +142,4 @@ if __name__ == "__main__":
     df = remap_in_numeric_labels(df)
 
     model_randomforest(df=df, target=target, columns_to_drop=columns_to_drop)
+    model_svm(df=df, target=target, columns_to_drop=columns_to_drop)
