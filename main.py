@@ -8,6 +8,7 @@ from extract import create_dataframe, save_dataframe
 from chargement_audio import load_audio_files
 from model import remap_in_numeric_labels, model_randomforest, model_svm
 from setData import sample_df
+from save_in_output_folder import save_png
 
 import os
 
@@ -24,15 +25,16 @@ def main():
     df = sample_df("features.csv")
     print(f"\n Signal caracteristics : \n {df.head()}")
 
-    df = remap_in_numeric_labels(df)
-    print(f"\n Dataframe's remap : \n {df.head()}")
+    df_remap = remap_in_numeric_labels(df)
+    print(f"\n Dataframe's remap : \n {df_remap.head()}")
 
     print(f"\n Binary classification (normal/abnormal) : \n")
-    model_svm(df=df, target="normalite", columns_to_drop=["name", "normalite"])
-    model_randomforest(df=df, target="normalite", columns_to_drop=["name", "normalite"])
+    model_svm(df=df_remap, target="normalite", columns_to_drop=["name", "normalite"])
+    model_randomforest(
+        df=df_remap, target="normalite", columns_to_drop=["name", "normalite"]
+    )
 
     print(f"\n Multiple classification \n")
-    df = sample_df(filepath="features.csv")
     df_abnormal, kmeans = clustering_pipeline(df=df)
     features = ["centroid", "mfcc_mean", "chroma_mean", "tempo", "zcr"]
     visualize_clusters(df_abnormal, features)
@@ -40,6 +42,8 @@ def main():
     df_moteur = df_abnormal[df_abnormal["type_defaut"] == "defaut_moteur"].copy()
     print(df_moteur)
     plot_defect_analysis(df_abnormal, features)
+
+    save_png(original_folder=".", output_folder="output_images")
 
 
 if __name__ == "__main__":

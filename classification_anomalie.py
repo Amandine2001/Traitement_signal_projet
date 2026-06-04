@@ -31,19 +31,7 @@ def clustering_pipeline(df):
     return df_abnormal, kmeans
 
 
-import matplotlib.pyplot as plt
-import seaborn as sns
-from sklearn.preprocessing import StandardScaler
-from sklearn.decomposition import PCA
-
-
 def visualize_clusters(df, features, cluster_col="cluster", output_prefix="clusters"):
-    """
-    Visualise les clusters d'anomalies et sauvegarde les figures :
-    - PCA 2D
-    - Heatmap des moyennes
-    - Boxplots des features
-    """
 
     df = df.copy()
 
@@ -100,17 +88,7 @@ def interpret_cluster(row):
         return "defaut_ventilation"
 
 
-import matplotlib.pyplot as plt
-import seaborn as sns
-
-
 def plot_defect_analysis(df, features, target="type_defaut", output_prefix="defects"):
-    """
-    Analyse et visualise les types de défauts :
-    - Répartition (countplot)
-    - Boxplots par feature
-    - Moyennes des features par défaut
-    """
 
     df = df.copy()
 
@@ -147,16 +125,3 @@ def plot_defect_analysis(df, features, target="type_defaut", output_prefix="defe
     plt.tight_layout()
     plt.savefig(f"{output_prefix}_mean_features.png")
     plt.close()
-
-
-if __name__ == "__main__":
-    df = sample_df(filepath="features.csv")
-    print("Start classification !")
-    df_abnormal, kmeans = clustering_pipeline(df=df)
-    features = ["centroid", "mfcc_mean", "chroma_mean", "tempo", "zcr"]
-    visualize_clusters(df_abnormal, features)
-    df_abnormal["type_defaut"] = df_abnormal.apply(interpret_cluster, axis=1)
-    df_moteur = df_abnormal[df_abnormal["type_defaut"] == "defaut_moteur"].copy()
-    print(df_moteur)
-    plot_defect_analysis(df_abnormal, features)
-    print("Classification is finished !")
