@@ -132,14 +132,3 @@ def test_model_svm(model, df, columns_to_drop, target):
 
     print(classification_report(y, y_pred))
     print(confusion_matrix(y, y_pred))
-
-
-if __name__ == "__main__":
-    df = sample_df(filepath="features.csv")
-    columns_to_drop = ["name", "normalite"]
-    target = "normalite"
-
-    df = remap_in_numeric_labels(df)
-
-    model_randomforest(df=df, target=target, columns_to_drop=columns_to_drop)
-    model_svm(df=df, target=target, columns_to_drop=columns_to_drop)
